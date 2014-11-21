@@ -1,35 +1,38 @@
+'use strict';
+
 angular.module('spnDragDrop', []).
-  directive('spnDraggable', function(){
+directive('spnDraggable', function() {
     return {
       restrict: 'A',
-      link: function (scope, element, attrs) {
+      link: function(scope, element, attrs) {
         element.attr('draggable', attrs.spnDraggable);
 
-       /*
-        dragstart
-        drag
-        dragenter
-        dragleave
-        dragover
-        drop
-        dragend
-        */
+        /*
+         dragstart
+         drag
+         dragenter
+         dragleave
+         dragover
+         drop
+         dragend
+         */
 
         function handleDragStart(e) {
           element.addClass('spn-drag');
-          return true
+          e.originalEvent.dataTransfer.setData('text', 'foo');
+          return true;
         }
 
         function handleDragEnd(e) {
           element.removeClass('spn-drag');
-          return true
+          return true;
         }
 
         element.bind('dragstart', handleDragStart);
         element.bind('dragend', handleDragEnd);
 
       }
-    }
+    };
   })
   .directive('spnDroppable', function() {
     return {
@@ -37,7 +40,7 @@ angular.module('spnDragDrop', []).
       scope: {
         onDropCallback: '=?spnOnDrop'
       },
-      link: function (scope, element, attrs) {
+      link: function(scope, element) {
 
         function handleDragEnter(e) {
           element.addClass('spn-drag-over');
@@ -48,32 +51,27 @@ angular.module('spnDragDrop', []).
         }
 
         function handleDragOver(e) {
-          if (e.stopPropagation) {
-            e.stopPropagation(); // stops the browser from redirecting.
+          if (e.preventDefault) {
+            e.preventDefault(); // Necessary. Allows us to drop
           }
         }
 
         function handleDrop(e) {
-          console.log('******** DROP ********');alert('go');
           if (e.stopPropagation) {
             e.stopPropagation(); // stops the browser from redirecting.
           }
-console.log(scope.onDropCallback);
-          if(scope.onDropCallback) {
+
+          if (scope.onDropCallback) {
             scope.onDropCallback(e);
           }
 
-          return false
+          return false;
         }
 
-        element.bind('drop', function(e) {
-          e.preventDefault();
-          alert('ko');
-          handleDrop(e);
-        });
+        element.bind('drop', handleDrop);
         element.bind('dragenter', handleDragEnter);
         element.bind('dragover', handleDragOver);
         element.bind('dragleave', handleDragLeave);
       }
-    }
+    };
   });
