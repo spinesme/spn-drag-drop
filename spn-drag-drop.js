@@ -4,6 +4,9 @@ angular.module('spnDragDrop', []).
 directive('spnDraggable', function() {
     return {
       restrict: 'A',
+      scope: {
+        data: '=spnData'
+      },
       link: function(scope, element, attrs) {
         element.attr('draggable', attrs.spnDraggable);
 
@@ -19,7 +22,7 @@ directive('spnDraggable', function() {
 
         function handleDragStart(e) {
           element.addClass('spn-drag');
-          e.originalEvent.dataTransfer.setData('text', 'foo');
+          e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
           return true;
         }
 
@@ -38,7 +41,7 @@ directive('spnDraggable', function() {
     return {
       restrict: 'A',
       scope: {
-        onDropCallback: '=?spnOnDrop'
+        onDropCallback: '=?spnOnDrop',
       },
       link: function(scope, element) {
 
@@ -61,10 +64,10 @@ directive('spnDraggable', function() {
             e.stopPropagation(); // stops the browser from redirecting.
           }
 
-          console.log(e.originalEvent.dataTransfer.getData('text'));
+          var data = JSON.parse(e.originalEvent.dataTransfer.getData('data'));
 
           if (scope.onDropCallback) {
-            scope.onDropCallback(e);
+            scope.onDropCallback(data, e);
           }
 
           return false; // Maybe we should use a e.preventDefault at the beginning

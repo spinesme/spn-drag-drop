@@ -49,7 +49,7 @@
 <div ng-controller="MainCtrl">
   <ul>
     <li ng-repeat="item in items" >
-      <div id="drag-{{$index}}" class="box" spn-draggable="true" ng-bind="item"></div>
+      <div id="drag-{{$index}}" class="box" spn-draggable="true" spn-data="item" ng-bind="item.title"></div>
       <div id="drop-{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"></div>
     </li>
   </ul>
@@ -67,11 +67,16 @@
 
       function fillArray(n) {
         var arr = Array.apply(null, Array(n));
-        return arr.map(function (x, i) { return '#'+i });
+        return arr.map(function (x, i) { 
+            return {
+                title:'Title #'+i,
+                position: i,
+            }
+        });
       }
 
-      $scope.onDrop = function(event) {
-        console.log(event);
+      $scope.onDrop = function(data) {
+          console.log(data);
       }
 
     });
