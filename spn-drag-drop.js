@@ -67,7 +67,7 @@ directive('spnDraggable', function() {
             scope.onDropCallback(e);
           }
 
-          return false;
+          return false; // Maybe we should use a e.preventDefault at the beginning
         }
 
         element.bind('drop', handleDrop);
