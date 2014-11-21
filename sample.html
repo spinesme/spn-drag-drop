@@ -8,30 +8,57 @@
       font-family: "Helvetica";
       color: dodgerblue;
     }
+
     li {
+      list-style: none;
+    }
+
+    .box {
       font-size: 2em;
       background: lightblue;
       border: 2px solid dodgerblue;
       padding: 20px;
       margin: 5px;
-      list-style: none;
     }
+
+    .target {
+      min-height: 10px;
+    }
+/*
+    [draggable] {
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -khtml-user-drag: element;
+      -webkit-user-drag: element;
+    }
+*/
+    .spn-drag {
+      opacity: 0.4;
+    }
+
+    .spn-drag-over {
+      border: 2px solid lightsalmon;
+    }
+
   </style>
 </head>
 <body ng-app="SampleApp">
-<h1>Sample Drag Drop directive</h1>
-
+<h1>Sample spn-drag-drop</h1>
 <div ng-controller="MainCtrl">
   <ul>
-    <li ng-repeat="item in items" spn-draggable>{{item}}</li>
+    <li ng-repeat="item in items" >
+      <div id="drag-{{$index}}" class="box" spn-draggable="true" ng-bind="item"></div>
+      <div id="drop-{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"></div>
+    </li>
   </ul>
 </div>
 
 
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
 <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js'></script>
 <script src='spn-drag-drop.js'></script>
-
 <script>
 
   angular.module('SampleApp', ['spnDragDrop']).
@@ -41,6 +68,11 @@
       function fillArray(n) {
         var arr = Array.apply(null, Array(n));
         return arr.map(function (x, i) { return '#'+i });
+      }
+
+      $scope.onDrop = function(event) {
+        alert('dro p');
+        console.log(event);
       }
 
     });
