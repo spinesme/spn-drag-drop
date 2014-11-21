@@ -49,8 +49,8 @@
 <div ng-controller="MainCtrl">
   <ul>
     <li ng-repeat="item in items" >
-      <div id="drag-{{$index}}" class="box" spn-draggable="true" spn-data="item" ng-bind="item.title"></div>
-      <div id="drop-{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"></div>
+      <div id="drag-{{$index}}" class="box" spn-draggable="true" spn-data="item" ng-bind="item.title" spn-on-drag-start="onDragStart" spn-on-drag-end="onDragEnd"></div>
+      <div id="drop-{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop" spn-on-drag-enter="onDragEnter" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave"></div>
     </li>
   </ul>
 </div>
@@ -75,9 +75,15 @@
         });
       }
 
-      $scope.onDrop = function(data) {
-          console.log(data);
-      }
+      // spnDraggable callbacks
+      $scope.onDragStart = function(data) { console.log('DragStart: '+ data) };
+      $scope.onDragEnd   = function(data) { console.log('DragEnd: '+ data) };
+
+      // spnDroppable callbacks
+      $scope.onDragEnter = function(data) { console.log('DragEnter: '+ data) };
+      $scope.onDragOver  = function(data) { console.log('DragOver: '+ data) };
+      $scope.onDragLeave = function(data) { console.log('DragLeave: '+ data) };
+      $scope.onDrop      = function(data) { console.log('Drop: ' + data); }
 
     });
 

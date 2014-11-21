@@ -5,7 +5,9 @@ directive('spnDraggable', function() {
     return {
       restrict: 'A',
       scope: {
-        data: '=spnData'
+        data:                '=spnData',
+        onDragStartCallback: '=?spnOnDragStart',
+        onDragEndCallback:   '=?spnOnDragEnd',
       },
       link: function(scope, element, attrs) {
         element.attr('draggable', attrs.spnDraggable);
@@ -22,12 +24,23 @@ directive('spnDraggable', function() {
 
         function handleDragStart(e) {
           element.addClass('spn-drag');
+
           e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
+
+          if (scope.onDragStartCallback) {
+            scope.onDragStartCallback(scope.data, e);
+          }
+
           return true;
         }
 
         function handleDragEnd(e) {
           element.removeClass('spn-drag');
+
+          if (scope.onDragEndCallback) {
+            scope.onDragEndCallback(scope.data, e);
+          }
+
           return true;
         }
 
@@ -41,21 +54,36 @@ directive('spnDraggable', function() {
     return {
       restrict: 'A',
       scope: {
-        onDropCallback: '=?spnOnDrop',
+        onDropCallback:      '=?spnOnDrop',
+        onDragEnterCallback: '=?spnOnDragEnter',
+        onDragOverCallback:  '=?spnOnDragOver',
+        onDragLeaveCallback: '=?spnOnDragLeave'
       },
       link: function(scope, element) {
 
         function handleDragEnter(e) {
           element.addClass('spn-drag-over');
+
+          if (scope.onDragEnterCallback) {
+            scope.onDragEnterCallback(e);
+          }
         }
 
         function handleDragLeave(e) {
           element.removeClass('spn-drag-over');
+
+          if (scope.onDragLeaveCallback) {
+            scope.onDragLeaveCallback(e);
+          }
         }
 
         function handleDragOver(e) {
           if (e.preventDefault) {
             e.preventDefault(); // Necessary. Allows us to drop
+          }
+
+          if (scope.onDragOverCallback) {
+            scope.onDragOverCallback(e);
           }
         }
 
