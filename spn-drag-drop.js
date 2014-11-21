@@ -61,6 +61,8 @@ directive('spnDraggable', function() {
             e.stopPropagation(); // stops the browser from redirecting.
           }
 
+          console.log(e.originalEvent.dataTransfer.getData('text'));
+
           if (scope.onDropCallback) {
             scope.onDropCallback(e);
           }
