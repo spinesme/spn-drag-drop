@@ -19,21 +19,23 @@
       border: 2px solid dodgerblue;
       padding: 20px;
       margin: 5px;
+      width: 80%;
     }
 
     .target {
       min-height: 10px;
     }
-/*
-    [draggable] {
-      -moz-user-select: none;
-      -khtml-user-select: none;
-      -webkit-user-select: none;
-      user-select: none;
-      -khtml-user-drag: element;
-      -webkit-user-drag: element;
-    }
-*/
+
+    /*
+        [draggable] {
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          -khtml-user-drag: element;
+          -webkit-user-drag: element;
+        }
+    */
     .spn-drag {
       opacity: 0.4;
     }
@@ -47,10 +49,20 @@
 <body ng-app="SampleApp">
 <h1>Sample spn-drag-drop</h1>
 <div ng-controller="MainCtrl">
+  {{data.items[0].title}}
   <ul>
-    <li ng-repeat="item in items" >
-      <div id="drag-{{$index}}" class="box" spn-draggable="true" spn-data="item" ng-bind="item.title" spn-on-drag-start="onDragStart" spn-on-drag-end="onDragEnd"></div>
-      <div id="drop-{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop" spn-on-drag-enter="onDragEnter" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave"></div>
+    <li ng-repeat="item in data.items">
+      <div id="drag-{{$index}}"
+           class="box"
+           ng-bind="item.title"
+
+           spn-draggable="true"
+           spn-data="item"
+           spn-on-drag="onDragStart"
+           spn-on-drag-end="onDragEnd"></div>
+
+      <div id="drop-{{$index}}" data-position="{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"
+           spn-on-drag-enter="onDragEnter" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave"></div>
     </li>
   </ul>
 </div>
@@ -63,30 +75,52 @@
 
   angular.module('SampleApp', ['spnDragDrop']).
     controller('MainCtrl', function ($scope) {
-      $scope.items = fillArray(40);
+      $scope.data = {
+        items: []
+      };
 
       function fillArray(n) {
-        var arr = Array.apply(null, Array(n));
-        return arr.map(function (x, i) { 
-            return {
-                title:'Title #'+i,
-                position: i,
-            }
-        });
+        for (var i = 0; i < n; i++) {
+          $scope.data.items = $scope.data.items.concat({
+            title: 'Title #' + i,
+            position: i
+          });
+        }
       }
 
       // spnDraggable callbacks
-      $scope.onDragStart = function(data) { console.log('DragStart: '+ data) };
-      $scope.onDragEnd   = function(data) { console.log('DragEnd: '+ data) };
+      $scope.onDragEnd = function (data) {
+        console.log('DragEnd: ' + data)
+      };
+      $scope.onDragStart = function (data) {
+        console.log('DragStart');
+      };
 
       // spnDroppable callbacks
-      $scope.onDragEnter = function(data) { console.log('DragEnter: '+ data) };
-      $scope.onDragOver  = function(data) { console.log('DragOver: '+ data) };
-      $scope.onDragLeave = function(data) { console.log('DragLeave: '+ data) };
-      $scope.onDrop      = function(data) { console.log('Drop: ' + data); }
+      $scope.onDragEnter = function (data) {
+        console.log('DragEnter: ' + data)
+      };
+      $scope.onDragOver = function (data) {
+        console.log('DragOver: ' + data)
+      };
+      $scope.onDragLeave = function (data) {
+        console.log('DragLeave: ' + data)
+      };
+      $scope.onDrop = function (data, event) {
+        var from = data.position;
+        var target = $(event.currentTarget);
+        var to = parseInt(target.attr('data-position'), 10);
+
+        var element = $scope.data.items[from]
+        $scope.data.items.splice(from, 1);
+        $scope.data.items.splice(to, 0, element);
+
+      };
+
+
+      fillArray(40)
 
     });
-
 
 </script>
 
