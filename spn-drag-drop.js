@@ -5,9 +5,9 @@ directive('spnDraggable', function() {
     return {
       restrict: 'A',
       scope: {
-        data:                '=spnData',
+        data: '=spnData',
         onDragStartCallback: '=?spnOnDrag',
-        onDragEndCallback:   '=?spnOnDragEnd'
+        onDragEndCallback: '=?spnOnDragEnd'
       },
       link: function(scope, element, attrs) {
         element.attr('draggable', attrs.spnDraggable);
@@ -25,7 +25,9 @@ directive('spnDraggable', function() {
         function handleDragStart(e) {
           element.addClass('spn-drag');
 
-          e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
+          if (e.originalEvent) {
+            e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
+          }
 
           if (scope.onDragStartCallback) {
             scope.onDragStartCallback(scope.data, e);
@@ -56,7 +58,7 @@ directive('spnDraggable', function() {
           var offset = element.offset();
           e.preventDefault();
           e.stopPropagation();
-          var orig = (e.type === "mousemove") ? e.originalEvent : e.originalEvent.changedTouches[0];
+          var orig = (e.type === 'mousemove') ? e.originalEvent : e.originalEvent.changedTouches[0];
           var newOffset = {
             x: orig.pageX - offset.x - origPos.left,
             y: orig.pageY - offset.y - origPos.top
@@ -71,8 +73,36 @@ directive('spnDraggable', function() {
         element.bind('dragend', handleDragEnd);
 
 
-        element.bind('touchstart', handleTouchStart, false)
-        element.bind('touchmove mousemove', handleTouchMove, false)
+        // element.bind('touchstart', handleTouchStart, false)
+        // element.bind('touchmove mousemove', handleTouchMove, false)
+
+        interact('div[draggable]')
+          .draggable({
+            max: Infinity,
+            autoScroll: true,
+
+            onmove: function(e) {
+              var target = e.target,
+                // keep the dragged position in the data-x/data-y attributes
+                x = (parseFloat(target.getAttribute('data-x')) || 0) + e.dx,
+                y = (parseFloat(target.getAttribute('data-y')) || 0) + e.dy;
+
+              //translate element
+              target.style.webkitTransform =
+                target.style.transform =
+                'translate(' + x + 'px, ' + y + 'px)';
+
+              // update the posiion attributes
+              target.setAttribute('data-x', x);
+              target.setAttribute('data-y', y);
+
+              handleDragStart(e);
+            },
+            onend: function(e) {
+              console.log('interact on move');
+              handleDragEnd(e);
+            },
+          }).autoScroll(true);
 
       }
     };
@@ -81,9 +111,9 @@ directive('spnDraggable', function() {
     return {
       restrict: 'A',
       scope: {
-        onDropCallback:      '=?spnOnDrop',
+        onDropCallback: '=?spnOnDrop',
         onDragEnterCallback: '=?spnOnDragEnter',
-        onDragOverCallback:  '=?spnOnDragOver',
+        onDragOverCallback: '=?spnOnDragOver',
         onDragLeaveCallback: '=?spnOnDragLeave'
       },
       link: function(scope, element) {
