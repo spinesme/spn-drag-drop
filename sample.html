@@ -62,7 +62,7 @@
            spn-on-drag-end="onDragEnd"></div>
 
       <div id="drop-{{$index}}" data-position="{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"
-           spn-on-drag-enter="onDragEnter" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave"></div>
+           spn-on-drop-activate="onDropActivate" spn-on-drop-deactivate="onDropDeactivate" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave" style="border: 1px solid"></div>
     </li>
   </ul>
 </div>
@@ -91,23 +91,32 @@
 
       // spnDraggable callbacks
       $scope.onDragEnd = function (data) {
-        console.log('DragEnd: ' + data)
+        console.log('Callback dragEnd: ' + data)
       };
+
       $scope.onDragStart = function (data) {
-        console.log('DragStart');
+        console.log('Callback dragStart');
       };
 
       // spnDroppable callbacks
-      $scope.onDragEnter = function (data) {
-        console.log('DragEnter: ' + data)
+      $scope.onDropActivate = function (data) {
+        console.log('Callback on drop activate: ' + data)
       };
+
+      $scope.onDropDeactivate = function (data) {
+        console.log('Callback on drop deactivate: ' + data)
+      };
+
       $scope.onDragOver = function (data) {
-        console.log('DragOver: ' + data)
+        console.log('Callback on drag over callback: ' + data)
       };
+
       $scope.onDragLeave = function (data) {
-        console.log('DragLeave: ' + data)
+        console.log('Callback on drag leave callback: ' + data)
       };
+
       $scope.onDrop = function (data, event) {
+        console.log('Callback on drop callback: ' + data)
         var from = data.position;
         var target = $(event.currentTarget);
         var to = parseInt(target.attr('data-position'), 10);
@@ -115,7 +124,6 @@
         var element = $scope.data.items[from]
         $scope.data.items.splice(from, 1);
         $scope.data.items.splice(to, 0, element);
-
       };
 
 

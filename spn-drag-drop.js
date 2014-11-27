@@ -7,55 +7,37 @@ directive('spnDraggable', function() {
       scope: {
         data: '=spnData',
         onDragStartCallback: '=?spnOnDrag',
+        onDragMoveCallback: '=?spnOnMove',
         onDragEndCallback: '=?spnOnDragEnd'
       },
       link: function(scope, element, attrs) {
         element.attr('draggable', attrs.spnDraggable);
 
         /*
-         dragstart
-         drag
+         - dragstart
+         - drag
          dragenter
          dragleave
          dragover
          drop
-         dragend
+         - dragend
          */
 
-        function handleDragStart(e) {
-          element.addClass('spn-drag');
-
-          if (e.originalEvent) {
-            e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
-          }
-
-          if (scope.onDragStartCallback) {
-            scope.onDragStartCallback(scope.data, e);
-          }
-
-          return true;
-        }
-
-        function handleDragEnd(e) {
-          element.removeClass('spn-drag');
-
-          if (scope.onDragEndCallback) {
-            scope.onDragEndCallback(scope.data, e);
-          }
-
-          return true;
-        }
-
-        element.bind('dragstart', handleDragStart);
-        element.bind('dragend', handleDragEnd);
-
-
-        interact('div[draggable]')
+        interact('div[spn-draggable]')
           .draggable({
             max: Infinity,
             autoScroll: true,
 
+            onstart: function(e) {
+              console.log('interact on start');
+
+              if (scope.onDragStartCallback) {
+                scope.onDragStartCallback(scope.data, e);
+              }
+            },
+
             onmove: function(e) {
+              console.log('interact on move');
               var target = e.target,
                 // keep the dragged position in the data-x/data-y attributes
                 x = (parseFloat(target.getAttribute('data-x')) || 0) + e.dx,
@@ -70,72 +52,80 @@ directive('spnDraggable', function() {
               target.setAttribute('data-x', x);
               target.setAttribute('data-y', y);
 
-              handleDragStart(e);
+              if (scope.onDragMoveCallback) {
+                scope.onDragMoveCallback(scope.data, e);
+              }
             },
+
             onend: function(e) {
-              console.log('interact on move');
-              handleDragEnd(e);
+              console.log('interact on end');
+
+              if (scope.onDragEndCallback) {
+                scope.onDragEndCallback(scope.data, e);
+              }
             },
+
           }).autoScroll(true);
 
       }
     };
   })
+
   .directive('spnDroppable', function() {
     return {
       restrict: 'A',
       scope: {
         onDropCallback: '=?spnOnDrop',
-        onDragEnterCallback: '=?spnOnDragEnter',
+        onDropActivateCallback: '=?spnOnDropActivate',
+        onDropDeactivateCallback: '=?spnOnDropDeactivate',
         onDragOverCallback: '=?spnOnDragOver',
         onDragLeaveCallback: '=?spnOnDragLeave'
       },
       link: function(scope, element) {
 
-        function handleDragEnter(e) {
-          element.addClass('spn-drag-over');
+        interact('div[spn-droppable]').dropzone({
+          accept: 'div[spn-draggable]',
+          overlap: 0.75,
 
-          if (scope.onDragEnterCallback) {
-            scope.onDragEnterCallback(e);
+          ondropactivate: function(e){
+            console.log('interact drop activate');
+            //add active dropzone feedback
+            if (scope.onDropActivateCallback) {
+              scope.onDropActivateCallback(e);
+            }
+          },
+
+          ondragenter: function(e){
+            console.log('interact drag enter');
+            //add feedback the possibility of drop
+            if (scope.onDragOverCallback) {
+              scope.onDragOverCallback(e);
+            }
+          },
+
+          ondragleave: function(e){
+            console.log('interact drag leave');
+            //remove feedback the possibility of drop
+            if (scope.onDragLeaveCallback) {
+              scope.onDragLeaveCallback(e);
+            }
+          },
+
+          ondrop: function(e){
+            console.log('interact drop');
+            if (scope.onDropCallback) {
+              scope.onDropCallback(data, e);
+            }
+          },
+
+          ondropdeactivate: function(e){
+            console.log('interact drop deactivate');
+            //add active dropzone feedback
+            if (scope.onDropDeactivateCallback) {
+              scope.onDropDeactivateCallback(e);
+            }
           }
-        }
-
-        function handleDragLeave(e) {
-          element.removeClass('spn-drag-over');
-
-          if (scope.onDragLeaveCallback) {
-            scope.onDragLeaveCallback(e);
-          }
-        }
-
-        function handleDragOver(e) {
-          if (e.preventDefault) {
-            e.preventDefault(); // Necessary. Allows us to drop
-          }
-
-          if (scope.onDragOverCallback) {
-            scope.onDragOverCallback(e);
-          }
-        }
-
-        function handleDrop(e) {
-          if (e.stopPropagation) {
-            e.stopPropagation(); // stops the browser from redirecting.
-          }
-
-          var data = JSON.parse(e.originalEvent.dataTransfer.getData('data'));
-
-          if (scope.onDropCallback) {
-            scope.onDropCallback(data, e);
-          }
-
-          return false; // Maybe we should use a e.preventDefault at the beginning
-        }
-
-        element.bind('drop', handleDrop);
-        element.bind('dragenter', handleDragEnter);
-        element.bind('dragover', handleDragOver);
-        element.bind('dragleave', handleDragLeave);
+        });
       }
     };
   });
