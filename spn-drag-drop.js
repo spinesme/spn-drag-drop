@@ -46,35 +46,9 @@ directive('spnDraggable', function() {
           return true;
         }
 
-        function handleTouchStart(e) {
-          element.addClass('spn-drag');
-
-          e.originalEvent.dataTransfer.setData('data', JSON.stringify(scope.data));
-
-          event.preventDefault();
-        }
-
-        function handleTouchMove(e) {
-          var offset = element.offset();
-          e.preventDefault();
-          e.stopPropagation();
-          var orig = (e.type === 'mousemove') ? e.originalEvent : e.originalEvent.changedTouches[0];
-          var newOffset = {
-            x: orig.pageX - offset.x - origPos.left,
-            y: orig.pageY - offset.y - origPos.top
-          };
-          element.css({
-            'transform': 'translate(' + newOffset.x + 'px, ' + newOffset.y + 'px) translatez(1px)'
-          });
-
-        }
-
         element.bind('dragstart', handleDragStart);
         element.bind('dragend', handleDragEnd);
 
-
-        // element.bind('touchstart', handleTouchStart, false)
-        // element.bind('touchmove mousemove', handleTouchMove, false)
 
         interact('div[draggable]')
           .draggable({
