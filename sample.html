@@ -40,7 +40,7 @@
       opacity: 0.4;
     }
 
-    .spn-drag-over {
+    .spn-drop-zone {
       border: 2px solid lightsalmon;
     }
 
@@ -65,8 +65,7 @@
           spn-on-drop-activate="onDropActivate"
           spn-on-drop-deactivate="onDropDeactivate"
           spn-on-drag-over="onDragOver"
-          spn-on-drag-leave="onDragLeave"
-          style="border: 1px solid"></div>
+          spn-on-drag-leave="onDragLeave"></div>
     </li>
   </ul>
 </div>
@@ -105,10 +104,14 @@
       // spnDroppable callbacks
       $scope.onDropActivate = function (data) {
         console.log('Callback on drop activate: ' + data)
+        data.relatedTarget.classList.add('spn-drag');
+        data.target.classList.add('spn-drop-zone');
       };
 
       $scope.onDropDeactivate = function (data) {
         console.log('Callback on drop deactivate: ' + data)
+        data.relatedTarget.classList.remove('spn-drag');
+        data.target.classList.remove('spn-drop-zone');
       };
 
       $scope.onDragOver = function (data) {
