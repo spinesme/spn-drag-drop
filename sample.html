@@ -44,6 +44,10 @@
       border: 2px solid lightsalmon;
     }
 
+    .spn-dragged-in {
+      background: red;
+    }
+
   </style>
 </head>
 <body ng-app="SampleApp">
@@ -52,7 +56,7 @@
   {{data.items[0].title}}
   <ul>
     <li ng-repeat="item in data.items">
-      <div id="drag-{{$index}}"
+      <div id="drag-{{$index}}" data-position="{{$index}}" 
            class="box"
            ng-bind="item.title"
 
@@ -116,17 +120,18 @@
 
       $scope.onDragOver = function (data) {
         console.log('Callback on drag over callback: ' + data)
+        data.target.classList.add('spn-dragged-in');
       };
 
       $scope.onDragLeave = function (data) {
         console.log('Callback on drag leave callback: ' + data)
+        data.target.classList.remove('spn-dragged-in');
       };
 
-      $scope.onDrop = function (data, event) {
+      $scope.onDrop = function (data) {
         console.log('Callback on drop callback: ' + data)
-        var from = data.position;
-        var target = $(event.currentTarget);
-        var to = parseInt(target.attr('data-position'), 10);
+        var from = parseInt(data.relatedTarget.getAttribute('data-position'), 10);
+        var to = parseInt(data.target.getAttribute('data-position'), 10);
 
         var element = $scope.data.items[from]
         $scope.data.items.splice(from, 1);

@@ -32,7 +32,7 @@ directive('spnDraggable', function() {
               console.log('interact on start');
 
               if (scope.onDragStartCallback) {
-                scope.onDragStartCallback(scope.data, e);
+                scope.onDragStartCallback(e);
               }
             },
 
@@ -53,7 +53,7 @@ directive('spnDraggable', function() {
               target.setAttribute('data-y', y);
 
               if (scope.onDragMoveCallback) {
-                scope.onDragMoveCallback(scope.data, e);
+                scope.onDragMoveCallback(e);
               }
             },
 
@@ -61,7 +61,7 @@ directive('spnDraggable', function() {
               console.log('interact on end');
 
               if (scope.onDragEndCallback) {
-                scope.onDragEndCallback(scope.data, e);
+                scope.onDragEndCallback(e);
               }
             },
 
@@ -85,7 +85,6 @@ directive('spnDraggable', function() {
 
         interact('div[spn-droppable]').dropzone({
           accept: 'div[spn-draggable]',
-          overlap: 0.75,
 
           ondropactivate: function(e){
             console.log('interact drop activate');
@@ -114,7 +113,7 @@ directive('spnDraggable', function() {
           ondrop: function(e){
             console.log('interact drop');
             if (scope.onDropCallback) {
-              scope.onDropCallback(data, e);
+              scope.onDropCallback(e);
             }
           },
 
