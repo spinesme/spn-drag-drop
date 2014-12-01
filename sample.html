@@ -23,7 +23,7 @@
     }
 
     .target {
-      min-height: 10px;
+      height: 20px;
     }
 
     /*
@@ -40,8 +40,13 @@
       opacity: 0.4;
     }
 
-    .spn-drag-over {
+    .spn-drop-zone {
+      height: 16px;
       border: 2px solid lightsalmon;
+    }
+
+    .spn-dragged-in {
+      background: red;
     }
 
   </style>
@@ -49,10 +54,9 @@
 <body ng-app="SampleApp">
 <h1>Sample spn-drag-drop</h1>
 <div ng-controller="MainCtrl">
-  {{data.items[0].title}}
   <ul>
     <li ng-repeat="item in data.items">
-      <div id="drag-{{$index}}"
+      <div id="drag-{{$index}}" data-position="{{$index}}" 
            class="box"
            ng-bind="item.title"
 
@@ -62,7 +66,10 @@
            spn-on-drag-end="onDragEnd"></div>
 
       <div id="drop-{{$index}}" data-position="{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"
-           spn-on-drag-enter="onDragEnter" spn-on-drag-over="onDragOver" spn-on-drag-leave="onDragLeave"></div>
+          spn-on-drop-activate="onDropActivate"
+          spn-on-drop-deactivate="onDropDeactivate"
+          spn-on-drag-over="onDragOver"
+          spn-on-drag-leave="onDragLeave"></div>
     </li>
   </ul>
 </div>
@@ -70,6 +77,7 @@
 
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
 <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js'></script>
+<script src='interact-1.1.2.js'></script>
 <script src='spn-drag-drop.js'></script>
 <script>
 
@@ -90,31 +98,44 @@
 
       // spnDraggable callbacks
       $scope.onDragEnd = function (data) {
-        console.log('DragEnd: ' + data)
+        console.log('Callback dragEnd: ' + data)
       };
+
       $scope.onDragStart = function (data) {
-        console.log('DragStart');
+        console.log('Callback dragStart');
       };
 
       // spnDroppable callbacks
-      $scope.onDragEnter = function (data) {
-        console.log('DragEnter: ' + data)
+      $scope.onDropActivate = function (data) {
+        console.log('Callback on drop activate: ' + data)
+        data.relatedTarget.classList.add('spn-drag');
+        data.target.classList.add('spn-drop-zone');
       };
+
+      $scope.onDropDeactivate = function (data) {
+        console.log('Callback on drop deactivate: ' + data)
+        data.relatedTarget.classList.remove('spn-drag');
+        data.target.classList.remove('spn-drop-zone');
+      };
+
       $scope.onDragOver = function (data) {
-        console.log('DragOver: ' + data)
+        console.log('Callback on drag over callback: ' + data)
+        data.target.classList.add('spn-dragged-in');
       };
+
       $scope.onDragLeave = function (data) {
-        console.log('DragLeave: ' + data)
+        console.log('Callback on drag leave callback: ' + data)
+        data.target.classList.remove('spn-dragged-in');
       };
-      $scope.onDrop = function (data, event) {
-        var from = data.position;
-        var target = $(event.currentTarget);
-        var to = parseInt(target.attr('data-position'), 10);
+
+      $scope.onDrop = function (data) {
+        console.log('Callback on drop callback: ' + data)
+        var from = parseInt(data.relatedTarget.getAttribute('data-position'), 10);
+        var to = parseInt(data.target.getAttribute('data-position'), 10);
 
         var element = $scope.data.items[from]
         $scope.data.items.splice(from, 1);
         $scope.data.items.splice(to, 0, element);
-
       };
 
 
