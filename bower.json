@@ -1,6 +1,6 @@
 {
   "name": "spn-drag-drop",
-  "main": "spn-drag-drop.js",
+  "main": "./spn-drag-drop.js",
   "version": "0.0.1",
   "homepage": "https://github.com/spinesme/spn-drag-drop",
   "authors": [
