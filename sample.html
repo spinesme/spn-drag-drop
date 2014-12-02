@@ -56,7 +56,7 @@
 <div ng-controller="MainCtrl">
   <ul>
     <li ng-repeat="item in data.items">
-      <div id="drag-{{$index}}" data-position="{{$index}}" 
+      <div id="drag-{{$index}}" data-position="{{$index}}"
            class="box"
            ng-bind="item.title"
 
@@ -98,38 +98,31 @@
 
       // spnDraggable callbacks
       $scope.onDragEnd = function (data) {
-        console.log('Callback dragEnd: ' + data)
       };
 
       $scope.onDragStart = function (data) {
-        console.log('Callback dragStart');
       };
 
       // spnDroppable callbacks
       $scope.onDropActivate = function (data) {
-        console.log('Callback on drop activate: ' + data)
         data.relatedTarget.classList.add('spn-drag');
         data.target.classList.add('spn-drop-zone');
       };
 
       $scope.onDropDeactivate = function (data) {
-        console.log('Callback on drop deactivate: ' + data)
         data.relatedTarget.classList.remove('spn-drag');
         data.target.classList.remove('spn-drop-zone');
       };
 
       $scope.onDragOver = function (data) {
-        console.log('Callback on drag over callback: ' + data)
         data.target.classList.add('spn-dragged-in');
       };
 
       $scope.onDragLeave = function (data) {
-        console.log('Callback on drag leave callback: ' + data)
         data.target.classList.remove('spn-dragged-in');
       };
 
       $scope.onDrop = function (data) {
-        console.log('Callback on drop callback: ' + data)
         var from = parseInt(data.relatedTarget.getAttribute('data-position'), 10);
         var to = parseInt(data.target.getAttribute('data-position'), 10);
 

@@ -23,13 +23,24 @@ directive('spnDraggable', function() {
          - dragend
          */
 
+        var thumb;
+
         interact('div[spn-draggable]')
           .draggable({
             max: Infinity,
             autoScroll: true,
 
             onstart: function(e) {
-              console.log('interact on start');
+              var target = e.target;
+              thumb = target.cloneNode(true);
+              target.parentNode.appendChild(thumb);
+              thumb.setAttribute('top', target.getAttribute('top'));
+              thumb.setAttribute('left', target.getAttribute('left'));
+
+              console.log('thumb');
+              console.log(thumb);
+
+              e.target.classList.add('dragging');
 
               if (scope.onDragStartCallback) {
                 scope.onDragStartCallback(e);
@@ -37,20 +48,20 @@ directive('spnDraggable', function() {
             },
 
             onmove: function(e) {
-              console.log('interact on move');
-              var target = e.target,
+              var
+                //target = e.target,
                 // keep the dragged position in the data-x/data-y attributes
-                x = (parseFloat(target.getAttribute('data-x')) || 0) + e.dx,
-                y = (parseFloat(target.getAttribute('data-y')) || 0) + e.dy;
+                x = (parseFloat(thumb.getAttribute('data-x')) | 0) + e.dx,
+                y = (parseFloat(thumb.getAttribute('data-y')) | 0) + e.dy;
 
               //translate element
-              target.style.webkitTransform =
-                target.style.transform =
+              thumb.style.webkitTransform =
+                thumb.style.transform =
                 'translate(' + x + 'px, ' + y + 'px)';
 
               // update the posiion attributes
-              target.setAttribute('data-x', x);
-              target.setAttribute('data-y', y);
+              thumb.setAttribute('data-x', x);
+              thumb.setAttribute('data-y', y);
 
               if (scope.onDragMoveCallback) {
                 scope.onDragMoveCallback(e);
@@ -58,12 +69,13 @@ directive('spnDraggable', function() {
             },
 
             onend: function(e) {
-              console.log('interact on end');
+              var parent = e.target.parentNode;
+              parent.removeChild(parent.lastChild);
 
-              if (scope.onDragEndCallback) {
+              if(scope.onDragEndCallback) {
                 scope.onDragEndCallback(e);
               }
-            },
+            }
 
           }).autoScroll(true);
 
@@ -87,7 +99,6 @@ directive('spnDraggable', function() {
           accept: 'div[spn-draggable]',
 
           ondropactivate: function(e){
-            console.log('interact drop activate');
             //add active dropzone feedback
             if (scope.onDropActivateCallback) {
               scope.onDropActivateCallback(e);
@@ -95,7 +106,6 @@ directive('spnDraggable', function() {
           },
 
           ondragenter: function(e){
-            console.log('interact drag enter');
             //add feedback the possibility of drop
             if (scope.onDragOverCallback) {
               scope.onDragOverCallback(e);
@@ -103,7 +113,6 @@ directive('spnDraggable', function() {
           },
 
           ondragleave: function(e){
-            console.log('interact drag leave');
             //remove feedback the possibility of drop
             if (scope.onDragLeaveCallback) {
               scope.onDragLeaveCallback(e);
@@ -111,14 +120,12 @@ directive('spnDraggable', function() {
           },
 
           ondrop: function(e){
-            console.log('interact drop');
             if (scope.onDropCallback) {
               scope.onDropCallback(e);
             }
           },
 
           ondropdeactivate: function(e){
-            console.log('interact drop deactivate');
             //add active dropzone feedback
             if (scope.onDropDeactivateCallback) {
               scope.onDropDeactivateCallback(e);
