@@ -99,6 +99,8 @@ directive('spnDraggable', function() {
       },
       link: function(scope, element) {
 
+        interact.dynamicDrop(true);
+
         interact('div[spn-droppable]').dropzone({
           accept: 'div[spn-draggable]',
 
