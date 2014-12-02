@@ -36,12 +36,13 @@ directive('spnDraggable', function() {
               thumb.style.position = "absolute";
               thumb.style.top = target.offsetTop + 'px';
               thumb.style.left = target.offsetLeft + 'px';
+              thumb.classList.add('spn-dragging-clone');
               target.parentNode.appendChild(thumb);
 
               console.log(e);
               console.log(thumb.style.left);
 
-              e.target.classList.add('dragging');
+              e.target.classList.add('spn-dragging');
 
               if (scope.onDragStartCallback) {
                 scope.onDragStartCallback(e);
@@ -72,6 +73,8 @@ directive('spnDraggable', function() {
             onend: function(e) {
               var parent = e.target.parentNode;
               parent.removeChild(parent.lastChild);
+
+              e.target.classList.remove('spn-dragging');
 
               if(scope.onDragEndCallback) {
                 scope.onDragEndCallback(e);
@@ -108,6 +111,8 @@ directive('spnDraggable', function() {
 
           ondragenter: function(e){
             //add feedback the possibility of drop
+            e.target.classList.add('spn-dropable-active');
+
             if (scope.onDragOverCallback) {
               scope.onDragOverCallback(e);
             }
@@ -115,6 +120,7 @@ directive('spnDraggable', function() {
 
           ondragleave: function(e){
             //remove feedback the possibility of drop
+            e.target.classList.remove('spn-dropable-active');
             if (scope.onDragLeaveCallback) {
               scope.onDragLeaveCallback(e);
             }
