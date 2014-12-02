@@ -34,8 +34,8 @@ directive('spnDraggable', function() {
               var target = e.target;
               thumb = target.cloneNode(true);
               thumb.style.position = "absolute";
-              thumb.style.top = e.pageY + 'px';
-              thumb.style.left = e.pageX + 'px';
+              thumb.style.top = target.offsetTop + 'px';
+              thumb.style.left = target.offsetLeft + 'px';
               target.parentNode.appendChild(thumb);
 
               console.log(e);
