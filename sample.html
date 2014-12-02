@@ -26,26 +26,16 @@
       height: 20px;
     }
 
-    /*
-        [draggable] {
-          -moz-user-select: none;
-          -khtml-user-select: none;
-          -webkit-user-select: none;
-          user-select: none;
-          -khtml-user-drag: element;
-          -webkit-user-drag: element;
-        }
-    */
     .spn-drag {
       opacity: 0.4;
     }
 
-    .spn-drop-zone {
+    .spn-drop-active {
       height: 16px;
       border: 2px solid lightsalmon;
     }
 
-    .spn-dragged-in {
+    .spn-drop-selected {
       background: red;
     }
 
@@ -105,21 +95,15 @@
 
       // spnDroppable callbacks
       $scope.onDropActivate = function (data) {
-        data.relatedTarget.classList.add('spn-drag');
-        data.target.classList.add('spn-drop-zone');
       };
 
       $scope.onDropDeactivate = function (data) {
-        data.relatedTarget.classList.remove('spn-drag');
-        data.target.classList.remove('spn-drop-zone');
       };
 
       $scope.onDragOver = function (data) {
-        data.target.classList.add('spn-dragged-in');
       };
 
       $scope.onDragLeave = function (data) {
-        data.target.classList.remove('spn-dragged-in');
       };
 
       $scope.onDrop = function (data) {

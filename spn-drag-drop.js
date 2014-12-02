@@ -103,7 +103,9 @@ directive('spnDraggable', function() {
           accept: 'div[spn-draggable]',
 
           ondropactivate: function(e){
-            //add active dropzone feedback
+            e.relatedTarget.classList.add('spn-drag');
+            e.target.classList.add('spn-drop-active');
+
             if (scope.onDropActivateCallback) {
               scope.onDropActivateCallback(e);
             }
@@ -111,7 +113,7 @@ directive('spnDraggable', function() {
 
           ondragenter: function(e){
             //add feedback the possibility of drop
-            e.target.classList.add('spn-dropable-active');
+            e.target.classList.add('spn-drop-selected');
 
             if (scope.onDragOverCallback) {
               scope.onDragOverCallback(e);
@@ -119,21 +121,26 @@ directive('spnDraggable', function() {
           },
 
           ondragleave: function(e){
-            //remove feedback the possibility of drop
-            e.target.classList.remove('spn-dropable-active');
+            e.target.classList.remove('spn-drop-selected');
+
             if (scope.onDragLeaveCallback) {
               scope.onDragLeaveCallback(e);
             }
           },
 
           ondrop: function(e){
+            e.target.classList.remove('spn-drop-selected');
+            e.target.classList.remove('spn-drop-active');
+
             if (scope.onDropCallback) {
               scope.onDropCallback(e);
             }
           },
 
           ondropdeactivate: function(e){
-            //add active dropzone feedback
+            e.relatedTarget.classList.remove('spn-drag');
+            e.target.classList.remove('spn-drop-active');
+
             if (scope.onDropDeactivateCallback) {
               scope.onDropDeactivateCallback(e);
             }
