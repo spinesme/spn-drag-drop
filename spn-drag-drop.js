@@ -33,12 +33,13 @@ directive('spnDraggable', function() {
             onstart: function(e) {
               var target = e.target;
               thumb = target.cloneNode(true);
+              thumb.style.position = "absolute";
+              thumb.style.top = e.pageY + 'px';
+              thumb.style.left = e.pageX + 'px';
               target.parentNode.appendChild(thumb);
-              thumb.setAttribute('top', target.getAttribute('top'));
-              thumb.setAttribute('left', target.getAttribute('left'));
 
-              console.log('thumb');
-              console.log(thumb);
+              console.log(e);
+              console.log(thumb.style.left);
 
               e.target.classList.add('dragging');
 
