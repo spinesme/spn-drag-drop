@@ -34,14 +34,10 @@ directive('spnDraggable', function() {
               var target = e.target;
               thumb = target.cloneNode(true);
               thumb.style.position = "absolute";
-              thumb.style.top = target.offsetTop + 'px';
+              thumb.style.top = Math.round(e.pageY - e.target.clientHeight/2) + 'px';
               thumb.style.left = target.offsetLeft + 'px';
               thumb.classList.add('spn-dragging-clone');
               target.parentNode.appendChild(thumb);
-
-              console.log(e);
-              console.log(thumb.style.left);
-
               e.target.classList.add('spn-dragging');
 
               if (scope.onDragStartCallback) {
