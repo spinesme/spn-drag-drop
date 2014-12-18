@@ -26,16 +26,26 @@
       height: 20px;
     }
 
+    /*
+        [draggable] {
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          -khtml-user-drag: element;
+          -webkit-user-drag: element;
+        }
+    */
     .spn-drag {
       opacity: 0.4;
     }
 
-    .spn-drop-active {
+    .spn-drop-zone {
       height: 16px;
       border: 2px solid lightsalmon;
     }
 
-    .spn-drop-selected {
+    .spn-dragged-in {
       background: red;
     }
 
@@ -45,21 +55,26 @@
 <h1>Sample spn-drag-drop</h1>
 <div ng-controller="MainCtrl">
   <ul>
-    <li ng-repeat="item in data.items">
+    <li ng-repeat="item in data.items|orderBy:position">
       <div id="drag-{{$index}}" data-position="{{$index}}"
            class="box"
-           ng-bind="item.title"
 
            spn-draggable="true"
-           spn-data="item"
+           spn-id="{{item.id}}"
            spn-on-drag="onDragStart"
-           spn-on-drag-end="onDragEnd"></div>
+           spn-on-drag-end="onDragEnd">
+        {{item.position}} - {{item.id}} {{item.title}}
+
+           </div>
 
       <div id="drop-{{$index}}" data-position="{{$index}}" class="target" spn-droppable="true" spn-on-drop="onDrop"
           spn-on-drop-activate="onDropActivate"
           spn-on-drop-deactivate="onDropDeactivate"
           spn-on-drag-over="onDragOver"
-          spn-on-drag-leave="onDragLeave"></div>
+          spn-on-drag-leave="onDragLeave"
+
+          data-new-pos="{{item.position+9}}"
+        >{{item.position+9}}</div>
     </li>
   </ul>
 </div>
@@ -80,8 +95,9 @@
       function fillArray(n) {
         for (var i = 0; i < n; i++) {
           $scope.data.items = $scope.data.items.concat({
-            title: 'Title #' + i,
-            position: i
+            id: i,
+            title: 'item #' + i,
+            position: (i + 1)  * 10
           });
         }
       }
@@ -95,15 +111,34 @@
 
       // spnDroppable callbacks
       $scope.onDropActivate = function (data) {
+        data.relatedTarget.classList.add('spn-drag');
+        data.target.classList.add('spn-drop-zone');
+
+        var newPos = parseInt(data.target.getAttribute('data-new-pos'), 10);
+        var fromId = parseInt(data.relatedTarget.getAttribute('spn-id'), 10);
+
+        angular.forEach($scope.data.items, function(item, index) {
+          if(item.id === fromId) {
+          console.log(index);
+            $scope.data.items[index].position = newPos;
+
+            console.log($scope.data.items[index]);
+          }
+        });
+        console.log('bar');
       };
 
       $scope.onDropDeactivate = function (data) {
+        data.relatedTarget.classList.remove('spn-drag');
+        data.target.classList.remove('spn-drop-zone');
       };
 
       $scope.onDragOver = function (data) {
+        data.target.classList.add('spn-dragged-in');
       };
 
       $scope.onDragLeave = function (data) {
+        data.target.classList.remove('spn-dragged-in');
       };
 
       $scope.onDrop = function (data) {
@@ -116,7 +151,7 @@
       };
 
 
-      fillArray(40)
+      fillArray(5)
 
     });
 
