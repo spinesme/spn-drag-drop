@@ -35,7 +35,6 @@ angular.module('spnDragDrop', []).
               thumb = target.cloneNode(true);
               thumb.style.position = 'fixed';
               thumb.style.top = e.clientY - Math.round(e.target.offsetHeight / 2) + 'px';
-              thumb.style.left = target.offsetLeft + 'px';
               thumb.classList.add('spn-dragging-clone');
               target.parentNode.appendChild(thumb);
               e.target.classList.add('spn-dragging');
