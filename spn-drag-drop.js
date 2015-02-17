@@ -5,12 +5,17 @@ angular.module('spnDragDrop', []).
     return {
       restrict: 'A',
       scope   : {
+        isDraggable        : '=spnDraggable',
         data               : '=spnData',
         onDragStartCallback: '=?spnOnDrag',
         onDragMoveCallback : '=?spnOnMove',
         onDragEndCallback  : '=?spnOnDragEnd'
       },
       link    : function(scope, element, attrs) {
+        if(!scope.isDraggable) {
+          return;
+        }
+
         element.attr('draggable', attrs.spnDraggable);
 
         /*
