@@ -1,5 +1,6 @@
 .tmp
 .csscomb.json
 .idea
+.idea/*
 *.iml
 .DS_Store

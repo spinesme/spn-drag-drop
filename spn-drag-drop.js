@@ -12,25 +12,18 @@ angular.module('spnDragDrop', []).
         onDragEndCallback  : '=?spnOnDragEnd'
       },
       link    : function(scope, element, attrs) {
+        var interactableElement = element[0];
+
         if(!scope.isDraggable) {
+          interact(interactableElement).unset();
           return;
         }
 
         element.attr('draggable', attrs.spnDraggable);
 
-        /*
-         - dragstart
-         - drag
-         dragenter
-         dragleave
-         dragover
-         drop
-         - dragend
-         */
-
         var thumb;
 
-        interact('div[spn-draggable]')
+        interact(interactableElement)
           .draggable({
             max       : Infinity,
             autoScroll: true,
